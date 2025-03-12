@@ -113,6 +113,48 @@ function App() {
         }
     }, [user]);
 
+    const handleUpdateUserProfile = async () =>{
+       try {
+        const updateUserProfile = await fetch('https://reandata-api.istad.co:443/rpc/update_user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+             
+                
+                    first_name_input: "Sokcheat",
+                    last_name_input: "Srorng",
+                    user_name_input: "SokcheatCooker",
+                    user_uuid_input:  localStorage.getItem('uuid')
+                  
+            })
+        })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const response = updateUserProfile.json();
+
+        
+        const userUUid = localStorage.getItem('uuid');
+
+       const getUserByUUID = await fetch(`https://reandata-api.istad.co:443/users?user_uuid=eq.${userUUid}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+       })
+
+      const responseUserbyUUID =  await getUserByUUID.json();
+       
+
+        console.log("UserProfileByUUID",responseUserbyUUID[0]);
+       } catch (error) {
+         console.log(error)
+        
+       }
+        
+
+    }
+
     // Backend authentication function
     const handleBackendAuthentication = async (
         googleProfile: GoogleProfile,
@@ -155,12 +197,15 @@ function App() {
                 });
 
                 const loginResult = await loginResponse.json();
+                
+
 
                 // Check if login is successful
                 if (loginResult?.result?.success === true) {
                     console.log('Automatic login successful after registration');
                     setUserData(loginResult?.result?.user);
                     alert('Registration and login successful');
+                    localStorage.setItem('uuid', loginResult?.result?.user?.user_uuid);
                     return loginResult;
                 } else {
                     throw new Error('Automatic login failed after registration');
@@ -183,6 +228,7 @@ function App() {
                 if (loginResult?.result?.success === true) {
                     console.log('Login successful');
                     setUserData(loginResult?.result?.user);
+                    localStorage.setItem('uuid', loginResult?.result?.user?.user_uuid);
                     return loginResult;
                 } else {
                     throw new Error(registrationResult.message || 'Authentication failed');
@@ -209,6 +255,9 @@ function App() {
         return name ? name.split(' ').map(n => n[0]).join('').toUpperCase() : 'UN';
     };
 
+
+
+
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
             <div className="bg-white shadow-md rounded-lg w-full max-w-md overflow-hidden">
@@ -231,6 +280,7 @@ function App() {
                         >
                             Try Again
                         </button>
+                        
                     </div>
                 ) : userData ? (
                     <div className="p-6">
@@ -259,6 +309,11 @@ function App() {
                                 </svg>
                                 Log out
                             </button>
+                            <button
+                            onClick={handleUpdateUserProfile}
+                            >
+                                UserProfile
+                            </button>
                         </div>
                     </div>
                 ) : (
@@ -276,6 +331,11 @@ function App() {
                                     className="w-5 h-5 mr-2"
                                 />
                                 Sign in with Google
+                            </button>
+                            <button
+                            onClick={handleUpdateUserProfile}
+                            >
+                                UserProfile
                             </button>
                         </div>
                     </div>
