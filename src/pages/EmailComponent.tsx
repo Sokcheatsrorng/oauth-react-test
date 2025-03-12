@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { render } from '@react-email/components';
 import { EmailParams, MailerSend, Recipient, Sender } from 'mailersend';
-import { Email } from './email'; // Assuming you have an Email component
+import { Email } from '../email'; 
 
 const mailerSend = new MailerSend({
   apiKey: process.env.REACT_APP_MAILERSEND_API_KEY || '',
 });
 
-export const App = () => {
+export const EmailComponent: React.FC = () => {
   const [emailSent, setEmailSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

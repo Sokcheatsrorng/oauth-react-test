@@ -65,6 +65,7 @@ const BoardingPassVisualization = () => {
     });
   };
 
+
   const aggregateSeats = () => {
     const seatCounts: { [key: string]: number } = {};
   
